@@ -4,6 +4,7 @@ import akka.actor.{ActorRef, ActorSystem}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
+import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -19,7 +20,9 @@ object Boot extends App with OptimiserRoutes {
 
   lazy val routes: Route = optimiserRoutes
 
-  val serverBinding: Future[Http.ServerBinding] = Http().bindAndHandle(routes, "localhost", 8080)
+  val config = ConfigFactory.load
+
+  val serverBinding: Future[Http.ServerBinding] = Http().bindAndHandle(routes, config.getString("bind-address"), 8080)
 
   serverBinding.onComplete {
     case Success(bound) =>
