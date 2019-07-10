@@ -9,7 +9,6 @@ lazy val root = (project in file("."))
   .settings(
     name := "drt-optimiser",
     resolvers ++= Seq(
-      Resolver.bintrayRepo("mfglabs", "maven"),
       "Mulesoft" at "https://repository.mulesoft.org/nexus/content/repositories/public/"
     ),
     libraryDependencies ++= libDeps,

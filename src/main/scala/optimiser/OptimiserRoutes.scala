@@ -1,5 +1,7 @@
 package optimiser
 
+import java.util.Date
+
 import akka.actor.{ActorRef, ActorSystem}
 import akka.event.Logging
 import akka.http.scaladsl.model.StatusCodes
@@ -34,7 +36,6 @@ trait OptimiserRoutes extends JsonSupport {
                 val desksAndWaitsFuture = (optimiserActor ? OptimiseWorkload(workloadToOptimise)).mapTo[DesksAndWaits]
 
                 onSuccess(desksAndWaitsFuture) { desksAndWaits =>
-                  log.info("Optimised workload")
                   complete((StatusCodes.Created, desksAndWaits))
                 }
               }

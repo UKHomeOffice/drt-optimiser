@@ -7,6 +7,6 @@ trait JsonSupport extends SprayJsonSupport {
   import DefaultJsonProtocol._
 
   implicit val desksAndWaitsJsonFormat: RootJsonFormat[DesksAndWaits] = jsonFormat2(DesksAndWaits)
-  implicit val workloadToOptimiseJsonFormat: RootJsonFormat[WorkloadToOptimise] = jsonFormat4(WorkloadToOptimise)
-  implicit val workloadToSimulateJsonFormat: RootJsonFormat[WorkloadToSimulate] = jsonFormat3(WorkloadToSimulate)
+  implicit val workloadToOptimiseJsonFormat: RootJsonFormat[WorkloadToOptimise] = jsonFormat5(WorkloadToOptimise)
+  implicit val workloadToSimulateJsonFormat: RootJsonFormat[WorkloadToSimulate] = jsonFormat4(WorkloadToSimulate)
 }

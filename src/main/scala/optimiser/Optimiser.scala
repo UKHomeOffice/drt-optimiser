@@ -12,8 +12,8 @@ import scala.util.{Failure, Success, Try}
 case class OptimizerConfig(sla: Int)
 
 final case class DesksAndWaits(desks: Seq[Int], waits: Seq[Int])
-final case class WorkloadToOptimise(workloads: Seq[Double], minDesks: Seq[Int], maxDesks: Seq[Int], sla: Int)
-final case class WorkloadToSimulate(workloads: Seq[Double], desks: Seq[Int], sla: Int)
+final case class WorkloadToOptimise(workloads: Seq[Double], minDesks: Seq[Int], maxDesks: Seq[Int], sla: Int, description: String)
+final case class WorkloadToSimulate(workloads: Seq[Double], desks: Seq[Int], sla: Int, description: String)
 
 object Optimiser {
   val log: Logger = LoggerFactory.getLogger(getClass)
@@ -21,6 +21,7 @@ object Optimiser {
   lazy val rEngine: ScriptEngine = manager.getEngineByName("Renjin")
 
   def optimise(workloadAndDesks: WorkloadToOptimise): DesksAndWaits = {
+    log.info(s"Optimising ${workloadAndDesks.description}")
     val tryCrunchRes = Try {
       loadOptimiserScript
       initialiseWorkloads(workloadAndDesks.workloads)
