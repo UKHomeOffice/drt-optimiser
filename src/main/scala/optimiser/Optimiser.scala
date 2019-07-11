@@ -1,6 +1,7 @@
 package optimiser
 
 import java.io.InputStream
+import java.util.Date
 
 import javax.script.{ScriptEngine, ScriptEngineManager}
 import org.renjin.sexp.{DoubleVector, IntVector}
@@ -21,7 +22,7 @@ object Optimiser {
   lazy val rEngine: ScriptEngine = manager.getEngineByName("Renjin")
 
   def optimise(workloadAndDesks: WorkloadToOptimise): DesksAndWaits = {
-    log.info(s"Optimising ${workloadAndDesks.description}")
+    val start = new Date().getTime
     val tryCrunchRes = Try {
       loadOptimiserScript
       initialiseWorkloads(workloadAndDesks.workloads)
@@ -49,6 +50,8 @@ object Optimiser {
       val deskRecsScala = (0 until deskRecs.length()) map deskRecs.getElementAsInt
       DesksAndWaits(deskRecsScala, runSimulation(deskRecsScala, "optimised", workloadAndDesks.sla))
     }
+    val end = new Date().getTime
+    log.info(s"${workloadAndDesks.description} Took ${end - start}ms")
 
     tryCrunchRes match {
       case Success(desksAndWaits) => desksAndWaits
@@ -60,7 +63,6 @@ object Optimiser {
 
   def simulate(workloadToSimulate: WorkloadToSimulate): Seq[Int] = {
     loadOptimiserScript
-    log.info(s"Setting ${workloadToSimulate.workloads.length} workloads & ${workloadToSimulate.desks.length} desks")
     initialiseWorkloads(workloadToSimulate.workloads)
     initialiseDesks("desks", workloadToSimulate.desks)
     runSimulation(workloadToSimulate.desks, "desks", workloadToSimulate.sla).toList
