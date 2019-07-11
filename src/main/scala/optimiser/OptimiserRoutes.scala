@@ -33,6 +33,7 @@ trait OptimiserRoutes extends JsonSupport {
           concat(
             post {
               entity(as[WorkloadToOptimise]) { workloadToOptimise =>
+                log.info(s"Received ${workloadToOptimise.workloads.length} minutes to process")
                 val desksAndWaitsFuture = (optimiserActor ? OptimiseWorkload(workloadToOptimise)).mapTo[DesksAndWaits]
 
                 onSuccess(desksAndWaitsFuture) { desksAndWaits =>
