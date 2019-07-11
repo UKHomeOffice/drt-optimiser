@@ -1,7 +1,5 @@
 package optimiser
 
-import java.util.Date
-
 import akka.actor.{ActorRef, ActorSystem}
 import akka.event.Logging
 import akka.http.scaladsl.model.StatusCodes
