@@ -12,7 +12,10 @@ lazy val root = (project in file("."))
       "Mulesoft" at "https://repository.mulesoft.org/nexus/content/repositories/public/"
     ),
     libraryDependencies ++= libDeps,
-    parallelExecution in Test := false
+    parallelExecution in Test := false,
+    PB.targets in Compile := Seq(
+      scalapb.gen() -> (sourceManaged in Compile).value
+    )
   )
   .enablePlugins(DockerPlugin)
   .enablePlugins(AshScriptPlugin)

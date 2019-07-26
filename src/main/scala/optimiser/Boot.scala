@@ -1,37 +1,16 @@
 package optimiser
 
-import akka.actor.{ActorRef, ActorSystem}
-import akka.http.scaladsl.Http
-import akka.http.scaladsl.server.Route
-import akka.stream.ActorMaterializer
-import com.typesafe.config.ConfigFactory
+import akka.actor.{ActorSystem, Props}
+import optimiser.actors.ControllerActor
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext, Future}
-import scala.util.{Failure, Success}
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
-object Boot extends App with OptimiserRoutes {
+object Boot extends App {
 
   implicit val system: ActorSystem = ActorSystem("drt-optimiser")
-  implicit val materializer: ActorMaterializer = ActorMaterializer()
-  implicit val executionContext: ExecutionContext = system.dispatcher
 
-  val optimiserActor: ActorRef = system.actorOf(OptimiserActor.props, "optimiserActor")
-
-  lazy val routes: Route = optimiserRoutes
-
-  val config = ConfigFactory.load
-
-  val serverBinding: Future[Http.ServerBinding] = Http().bindAndHandle(routes, config.getString("bind-address"), 8080)
-
-  serverBinding.onComplete {
-    case Success(bound) =>
-      println(s"Server started: http://${bound.localAddress.getHostString}:${bound.localAddress.getPort}/")
-    case Failure(e) =>
-      Console.err.println(s"Server could not start!")
-      e.printStackTrace()
-      system.terminate()
-  }
+  val controller = system.actorOf(Props(classOf[ControllerActor]))
 
   Await.result(system.whenTerminated, Duration.Inf)
 }

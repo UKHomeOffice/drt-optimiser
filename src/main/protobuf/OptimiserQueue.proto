@@ -1,0 +1,25 @@
+syntax = "proto2";
+
+package server.protobuf.messages;
+
+
+message DaysToAddMessage {
+    repeated LoadsMessage loads = 1;
+    optional int64 bookmark = 2;
+}
+
+message DaysToRemoveMessage {
+    repeated int64 days = 1;
+}
+
+message LoadsMessage {
+    optional int64 day = 1;
+    repeated LoadMessage loads = 2;
+}
+
+message LoadMessage {
+    optional string terminal = 1;
+    optional string queue = 2;
+    optional int64 minute = 3;
+    optional double work = 4;
+}
