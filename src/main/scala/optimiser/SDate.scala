@@ -1,4 +1,4 @@
-package drtlib
+package optimiser
 
 import org.joda.time.format.ISODateTimeFormat
 import org.joda.time.{DateTime, DateTimeZone}

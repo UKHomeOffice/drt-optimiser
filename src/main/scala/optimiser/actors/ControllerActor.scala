@@ -7,18 +7,24 @@ import akka.persistence.jdbc.query.scaladsl.JdbcReadJournal
 import akka.persistence.query.{EventEnvelope, PersistenceQuery}
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
+import drt.shared.AirportConfig
 import optimiser.actors.state.Bookmark
 import optimiser.sources.{DesksAndWaitsSource, LoadUpdatesSource}
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.concurrent.ExecutionContext
 
-class ControllerActor extends Actor {
+object ControllerActor {
+  def apply(airportConfig: AirportConfig) = Props(new ControllerActor(airportConfig))
+}
+
+class ControllerActor(airportConfig: AirportConfig) extends Actor {
   val persistenceId = "queue-load"
 
   val log: Logger = LoggerFactory.getLogger(getClass)
 
-  val offsetMillis: Long = 120 * 60000
+  val offsetMillis: Int = airportConfig.crunchOffsetMinutes * 60000
+
   val optimiserQueueActorProps: Props = OptimiserQueueActor.props(offsetMillis, Seq(self))
   val optimiserQueueActor: AskableActorRef = context.system.actorOf(optimiserQueueActorProps, "optimiserQueueActor")
 
@@ -37,7 +43,10 @@ class ControllerActor extends Actor {
       implicit val materializer: ActorMaterializer = ActorMaterializer()
       implicit val executionContext: ExecutionContext = context.system.dispatcher
 
-      LoadUpdatesSource(eventSource, offsetMillis).runWith(queueSink)
-      DesksAndWaitsSource(optimiserQueueActor).runWith(desksAndWaitsSink)
+      LoadUpdatesSource(eventSource, offsetMillis)
+        .runWith(queueSink)
+
+      DesksAndWaitsSource(optimiserQueueActor, airportConfig.minMaxDesksByTerminalQueue, airportConfig.slaByQueue, airportConfig.eGateBankSize)
+        .runWith(desksAndWaitsSink)
   }
 }

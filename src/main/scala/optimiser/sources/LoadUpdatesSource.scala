@@ -3,7 +3,7 @@ package optimiser.sources
 import akka.NotUsed
 import akka.persistence.query.EventEnvelope
 import akka.stream.scaladsl.Source
-import drtlib.TQM
+import drt.shared.TQM
 import optimiser.actors.{LoadUpdates, LoadUpdatesByDay}
 import org.slf4j.{Logger, LoggerFactory}
 import server.protobuf.messages.QueueLoad.QueueLoadsMessage

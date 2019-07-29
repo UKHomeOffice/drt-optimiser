@@ -1,6 +1,7 @@
 package optimiser.actors.state
 
-import drtlib.TQM
+
+import drt.shared.TQM
 
 import scala.collection.mutable
 

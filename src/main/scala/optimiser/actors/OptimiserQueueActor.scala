@@ -2,7 +2,8 @@ package optimiser.actors
 
 import akka.actor.{ActorRef, Props}
 import akka.persistence._
-import drtlib._
+import drt.shared.TQM
+import optimiser.{DayLoads, SDate}
 import optimiser.actors.state.{Bookmark, QueueState}
 import optimiser.sources.HeadOfQueue
 import server.protobuf.messages.OptimiserQueue.{DaysToAddMessage, DaysToRemoveMessage, LoadMessage, LoadsMessage}
